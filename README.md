@@ -1,6 +1,6 @@
 # mips_processor_vhdl
 
-VHDL sources for a single-cycle, 32-bit MIPS-style processor core written as a course project, together with
+VHDL sources for a pipelined, 32-bit MIPS-style processor core written as a course project, together with
 the building blocks (ALU, adder, memories, counters) and a few testbenches that were developed alongside it.
 The files are a working snapshot rather than a cleaned-up design: several files exist in more than one
 revision, and some of the testbenches are incomplete.
@@ -13,7 +13,7 @@ All files sit at the top level; there is no build system or simulator script.
 
 | File | Contents |
 |---|---|
-| `MIPS_processor (2).vhd` | The most complete version of the `core` entity (~600 lines). Fetch/decode/execute/write-back as concurrent processes with a 32-entry register file. Decodes R-type register arithmetic (incl. `jr`), I-type immediate arithmetic (`addi`, `addiu`, `andi`, `ori`, `slti`, `sltiu`, `xori`), `lw`, `sw`, `beq`, `bne`, `j` and `jal`. The ALU is inlined in the same file. Instruction and data memories are external: the core exposes `IMdin`/`IM_addr_out` and `DM_din`/`DM_dout`/`DM_addr_out`/`DM_write` ports. |
+| `MIPS_processor (2).vhd` | The most complete version of the `core` entity (~600 lines). A simple pipeline: the `pipeline_move` process registers fetch-to-decode and decode-to-execute signals on each clock, so an instruction takes several cycles to reach execute and the result write-back; fetch, decode and execute are otherwise concurrent processes over a 32-entry register file. There is no hazard detection or forwarding. Decodes R-type register arithmetic (incl. `jr`), I-type immediate arithmetic (`addi`, `addiu`, `andi`, `ori`, `slti`, `sltiu`, `xori`), `lw`, `sw`, `beq`, `bne`, `j` and `jal`. The ALU is inlined in the same file. Instruction and data memories are external: the core exposes `IMdin`/`IM_addr_out` and `DM_din`/`DM_dout`/`DM_addr_out`/`DM_write` ports. |
 | `MIPS_processor.vhd`, `MIPS_processor (3).vhd` | Earlier, shorter drafts of the same `core` entity. |
 | `mips_core(mhf).vhd` | An alternative early draft (`mips_core` entity with an empty port list) with a `regdst`/`alusrc`/`memtoreg`-style control signal layout. |
 | `MIPS_tb.vhd` | Started testbench for `core` with `imemory`/`dmemory` stubs. It is unfinished and does not compile as is (missing library clauses, incomplete architectures, trailing `;` in port lists). |
